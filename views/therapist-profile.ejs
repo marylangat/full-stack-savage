@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+<head>
+    <title>21 Savage Fan Site</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+
+    <!-- <div class="page-header text-center">
+        <h1><span class="fa fa-anchor"></span> Expert Page</h1>
+        <a href="/logout" class="btn btn-default btn-sm">Logout</a>
+    </div> -->
+
+    <div class="container-fluid top-navbar box-shadow">
+        <a href="/" class="float-left black">
+        <h2>
+          <img src="" class="logo">
+          love buddy
+        </h2>
+        </a>
+      </div>
+
+
+
+      <div class="container">
+
+      <div class="page-header text-center">
+          <h1>profile</h1>
+          <a href="/feed-therapists">Feed</a>
+          <a href="/logout" class="btn btn-default btn-sm">Logout</a>
+      </div>
+
+      <!-- <div class="row">
+
+
+          <div class="col-sm-6">
+            <h3>Posts</h3>
+
+            <button type="submit" id="mapbtn" class="btn btn-warning btn-lg">get adress</button>
+
+
+            <h3>Add Story</h3>
+            <div class="container form-container">
+                <form action="" method="POST" class="col s12" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="input-field">
+                            <input type="text" id="title" name="title">
+                            <label for="title">Title</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-field">
+                            <select id="status" name="status">
+                                <option value="public" selected>Public</option>
+                                <option value="private">Private</option>
+                            </select>
+                            <label for="status">Status</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-field md-form amber-textarea active-amber-textarea">
+                            <h5>Tell Us Your Story:</h5>
+                            <i class="fas fa-angle-double-right prefix"></i>
+                            <textarea id="body" name="body" class="md-textarea form-control" ></textarea>
+                            <label for="body">how are you feeling?</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <input type="submit" value="Save" class="btn">
+                        <a href="/dashboard" class="btn orange">Cancel</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="fixed-action-btn">
+      <a href="/stories/add" class="btn-floating btn-large waves-effect waves-light red"><i class="fas fa-plus"></i></a>
+  </div>
+    </div>
+
+      </div> -->
+
+      <br>
+      <div class=" container form-container">
+
+        <form action="/makePost" method="post" enctype="multipart/form-data">
+          <div class="gram-card">
+      <div class="gram-card-header">
+        <!-- <img src="/images/logo/logo.png" class="gram-card-user-image"> -->
+        <a class="gram-card-user-name" href="/u/"></a>
+
+              <div class="dropdown gram-card-time">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="glyphicon glyphicon-option-vertical"></i></a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <!-- <li><a disabled><i class="fa fa-share"></i> View</a></li> -->
+
+                </ul>
+                </div>
+                <div class="time"></div>
+      </div>
+  <br>
+      <div class="gram-card-image">
+        <center>
+           <div class="upload-btn-wrapper">
+           <button class="btn agradient btn-action whoop" id="post">   <i class="fa fa-lg fa-upload"></i> Upload an image.
+           </button>
+           <input type='file' name='filetoupload' onchange="readURL(this);" id="file"/>
+          </div>
+          <div id="video-priview">
+
+          </div>
+          <img src="" id="blah" class="img-responsive">
+        </center>
+      </div>
+
+      <div class="row gram-card-content">
+        <p><a class="gram-card-content-user" href="/u/<%= user %>"><%= user.local.email %></a><br>
+
+          <div class="input-field">
+              <input type="text" id="title" class="form-control" name="title">
+              <label for="title">Title</label>
+          </div>
+              <div class="input-field md-form amber-textarea active-amber-textarea">
+                  <h5>Tell Us Your Story:</h5>
+                  <i class="fas fa-angle-double-right prefix"></i>
+                  <textarea id="body" name="body" class="md-textarea form-control" ></textarea>
+                  <!-- <label for="body">how are you feeling?</label> -->
+              </div>
+          </div>
+      </div>
+      <div class=" gram-card-footer row">
+          <input type="submit" value="Save" class="btnfooter-action-icons likes btn btn-link non-hoverable">
+          <a href="/feed-therapist" class="btn orange">Cancel</a>
+      </div>
+    </form>
+      <!-- <div class="gram-card-content">
+        <p><a class="gram-card-content-user" href="/u/<%= user %>"><%= user.local.email %></a><br>
+          <input type="text" name="caption" placeholder="some_cool_text" class="form-control">
+          <select class="form-control" name="type">
+            <option>thoughts</option>
+            <option>moments</option>
+            <option>events</option>
+          </select>
+       </p> -->
+
+
+
+
+      </div>
+
+      <!-- <div class="gram-card-footer">
+
+        <button class="footer-action-icons likes btn btn-link non-hoverable" disabled onclick="like('{{_id}}')" id="{{_id}}">
+          <i class="glyphicon glyphicon-thumbs-up"></i> 10</button>
+
+
+        <input class="comments-input" id="input_{{_id}}" type="text" placeholder="Comment here..."/>
+        <button class="footer-action-icons btn btn-primary" onclick="comment('{{_id}}')"><i class="glyphicon glyphicon-file-invoice"></i> Post</button>
+      </div> -->
+
+    </div>
+
+
+
+
+
+
+
+
+
+      <script src="main.js"></script>
+
+      </body>
+      </html>

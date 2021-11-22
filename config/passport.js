@@ -1,7 +1,12 @@
 // config/passport.js
 
 // load all the things we need
+const GoogleStrategy = require('passport-google-oauth20').Strategy
 var LocalStrategy   = require('passport-local').Strategy;
+// var configDB = require('./config/database.js');
+let clientId = "717537994604-j1r6tpbq95jrtoqntlhlbc0jmi0gt3nm.apps.googleusercontent.com"
+let clientSecret = "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"
+
 
 // load up the user model
 var User       		= require('../app/models/user');
@@ -107,5 +112,42 @@ module.exports = function(passport) {
         });
 
     }));
+
+    // =========================================================================
+    // google LOGIN =============================================================
+    // =========================================================================
+    passport.use("google-login",
+        new GoogleStrategy(
+          {
+            clientID: clientId,
+            clientSecret: clientSecret,
+            callbackURL: '/auth/google/callback',
+          },
+          async (accessToken, refreshToken, profile, done) => {
+            const newUser = {
+              googleId: profile.id,
+              displayName: profile.displayName,
+              username: profile.name.givenName,
+              lastName: profile.name.familyName,
+              image: profile.photos[0].value,
+            }
+
+            try {
+              let user = await User.findOne({ googleId: profile.id })
+
+              if (user) {
+                done(null, user)
+              } else {
+                user = await User.create(newUser)
+                done(null, user)
+              }
+            } catch (err) {
+              console.error(err)
+            }
+          }
+        )
+      )
+
+
 
 };

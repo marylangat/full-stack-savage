@@ -4,7 +4,7 @@
 // get all the tools we need
 var express  = require('express');
 var app      = express();
-var port     = process.env.PORT || 8080;
+var port     = process.env.PORT || 8000;
 const MongoClient = require('mongodb').MongoClient
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -19,7 +19,14 @@ mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
+const ejsLint = require('ejs-lint');
+var check = require('syntax-error')
+ const cors = require("cors");
 
+  //bodyParser
+app.use(express.json());
+ //enable cors
+ app.use(cors());
 
 var configDB = require('./config/database.js');
 

@@ -1,74 +1,71 @@
-var thumbUp = document.getElementsByClassName("fa-thumbs-up");
-var thumbDown = document.getElementsByClassName("fa-thumbs-down");
-var trash = document.getElementsByClassName("fas fa-trash-alt");
 
-Array.from(thumbUp).forEach(function (element) {
-  element.addEventListener("click", function () {
-    const name = this.parentNode.parentNode.childNodes[1].innerText;
-    const msg = this.parentNode.parentNode.childNodes[3].innerText;
-    const thumbUp = parseFloat(
-      this.parentNode.parentNode.childNodes[5].innerText
-    );
-    fetch("messages", {
-      method: "put",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: name,
-        msg: msg,
-        thumbUp: thumbUp,
-      }),
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        window.location.reload(true);
-      });
-  });
-});
 
-Array.from(thumbDown).forEach(function (element) {
-  element.addEventListener("click", function () {
-    const name = this.parentNode.parentNode.childNodes[1].innerText;
-    const msg = this.parentNode.parentNode.childNodes[3].innerText;
-    const thumbDown = parseFloat(
-      this.parentNode.parentNode.childNodes[5].innerText
-    );
-    fetch("messagesminus", {
-      method: "put",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: name,
-        msg: msg,
-        thumbUp: thumbDown,
-      }),
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        window.location.reload(true);
-      });
-  });
-});
 
-Array.from(trash).forEach(function (element) {
-  element.addEventListener("click", function () {
-    const name = this.parentNode.parentNode.childNodes[1].innerText;
-    const msg = this.parentNode.parentNode.childNodes[3].innerText;
-    fetch("messages", {
-      method: "delete",
+
+const therapistform = document.getElementById('therapistAdressForm');
+const address = document.getElementById('inputAddress');
+const address2 = document.getElementById('inputState');
+const state = document.getElementById('inputAddress2');
+const city = document.getElementById('inputCity');
+const zipcode = document.getElementById('inputZip');
+
+
+
+// Send POST to API to add store
+function addAdress(e) {
+
+  // if (storeId.value === '' || storeAddress.value === '') {
+  //   alert('Please fill in fields');
+  // }
+
+  const sendBody = {
+    address: address.value,
+    address2: address2.value,
+    state: state.value,
+    city: city.value,
+    zip: zipcode.value
+
+  };
+
+
+  fetch('maketherapistAdressaddress', {
+      method: 'post',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        name: name,
-        msg: msg,
-      }),
-    }).then(function (response) {
-      window.location.reload();
-    });
-  });
-});
+      body: JSON.stringify(sendBody)
+    })
+  }
+  //   .then((response) => {
+  //     if (response.ok) return response.json();
+  //     console.log(response);
+  //   })
+  //   .then((data) => {
+  //     console.log(data);
+  //    window.location.reload(true);
+  //   })
+  // }
+
+// therapistform.addEventListener('submit', addAdress);
+
+window.onload = function() {
+  let mapbtn = document.getElementById("mapbtn");
+  mapbtn.addEventListener("click", getCoordinates1);
+
+
+}
+
+function getCoordinates1(name) {
+
+  const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyBAQlSMbOLlUdpU1idGcHdi0uqvUaLEUl8&address=02906`
+
+  locObj =  fetch(geoUrl)
+  .then( (res) => res.json()).then( (data) =>
+  {
+    console.log(data);
+    // return data.results[0].geometry.location;
+  }).then((res) => res);
+  }
+
+// let coordinates1 = getCoordinates1(latinaze(name2));
+// console.log(coordinates1);
