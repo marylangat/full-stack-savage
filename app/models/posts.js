@@ -10,6 +10,10 @@ const   PostSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  img: {
+    type: String,
+    required: true,
+  },
   status: {
     type: String,
     default: 'public',

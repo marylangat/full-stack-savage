@@ -1,12 +1,51 @@
-var mongoose = require('mongoose');
-const ObjectId = require("mongodb").ObjectId;
+const geoUrl = "https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyBAQlSMbOLlUdpU1idGcHdi0uqvUaLEUl8&address=AIzaSyBAQlSMbOLlUdpU1idGcHdi0uqvUaLEUl8"
+let mongoose = require('mongoose');
+const fs= require("fs");
+const path = require("path");
+
+// const ObjectId = require("mongodb").ObjectI;
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 
+module.exports = function(app, passport, db, ObjectId, multer) {
 
-module.exports = function (app, passport, db, multer, ObjectId){
-  // {
-const geoUrl = "https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyBAQlSMbOLlUdpU1idGcHdi0uqvUaLEUl8&address=AIzaSyBAQlSMbOLlUdpU1idGcHdi0uqvUaLEUl8"
+
 // normal routes ===============================================================
+var storage = multer.diskStorage({
+destination: (req, file, cb) => {
+  cb(null, 'public/images/uploads')
+},
+filename: (req, file, cb) => {
+  cb(null, file.fieldname + '-' + Date.now() + ".png")
+}
+});
+var upload = multer({storage: storage});
+
+
+
+
+    app.post("/upload", upload.single("file-to-upload"), (req, res) => {
+      let time = new Date().toLocaleString();
+      let user = req.user;
+      let imgData = fs.readFileSync(path.join(__dirname + '/../public/images/uploads/' + req.file.filename))
+
+      db.collection("posts").save(
+        {
+          title: req.body.title,
+          body: req.body.body,
+          status: req.body.status,
+          createdAt: time,
+          //user: req.user._id,
+          img: imgData,
+          // comment: [],
+          postedBy:req.user._id
+        },
+        (err, result) => {
+          if (err) return console.log(err);
+          console.log("saved to database");
+          res.redirect("/therapist-profile");
+        }
+      );
+    });
 
     // show the home page (will also have our login links)
     app.get('/', function(req, res) {
@@ -16,17 +55,50 @@ const geoUrl = "https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyBAQ
     app.get('/therapist-profile', isLoggedIn, (req, res) => {
       let user = req.user;
       db.collection('posts')
-        .find({postedBy : user.local.email})
+        .find({postedBy : user._id})
 
         .toArray((err, result) => {
         if (err) return console.log(err)
 
-        res.render('therapist-profile', {
+        res.render('therapist-profile.ejs', {
           user : req.user,
           posts: result,
         })
       })
   });
+
+  // FEED =====================
+    app.get('/feed-therapist', isLoggedIn, function(req, res) {
+      db.collection('posts').find().toArray((err, result) => {
+        if (err) return console.log(err)
+        res.render('feed-therapist.ejs', {
+          user : req.user,
+          messages: result
+        })
+      })
+  });
+
+  // @desc    Delete story
+  // @route   DELETE /stories/:id
+  app.delete('/:id', isLoggedIn, async (req, res) => {
+    try {
+      let story = await Story.findById(req.params.id).lean()
+
+      if (!story) {
+        return res.render('error/404')
+      }
+
+      if (story.user != req.user.id) {
+        res.redirect('/therapist-profile.ejs')
+      } else {
+        await Story.remove({ _id: req.params.id })
+        res.redirect('/therapist-profile.ejs')
+      }
+    } catch (err) {
+      console.error(err)
+      return res.render('error/500')
+    }
+  })
 
 
 
@@ -46,44 +118,44 @@ const geoUrl = "https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyBAQ
         })
     });
 
+    //
+    // app.get('/feed-therapist', isLoggedIn, function(req, res) {
+    //   console.log("mary")
+    //     db.collection('posts').find({})
+    //
+    //
+    //       .toArray((err, result) => {
+    //       if (err) return console.log(err)
+    //
+    //       res.render('feed-therapist.ejs', {
+    //         user:req.user,
+    //         posts: result
+    //       })
+    //     })
+    // });
 
-    app.get('/feed-therapist', isLoggedIn, function(req, res) {
-        let user = req.user;
-        db.collection('addressTherapists')
-          .find({postedBy : user.local.email})
-
-          .toArray((err, result) => {
-          if (err) return console.log(err)
-
-          res.render('feed-therapist', {
-            user : req.user,
-            addressTherapists: result,
-          })
-        })
-    });
-
-    app.post("/makePost", upload.single("file-to-upload"), (req, res) => {
-      let time = new Date().toLocaleString();
-
-      let user = req.user;
-      db.collection("posts").save(
-        {
-          caption: req.body.caption,
-          img: "images/uploads/" + req.file.filename,
-          postedBy: user.local.username,
-          time,
-          like: 0,
-          likedBy: [],
-          comment: [],
-
-        },
-        (err, result) => {
-          if (err) return console.log(err);
-          console.log("saved to database");
-          res.redirect("/therapist-profile");
-        }
-      );
-    });
+    // app.post("/makePost", upload.single("file-to-upload"), (req, res) => {
+    //   let time = new Date().toLocaleString();
+    //
+    //   let user = req.user;
+    //   db.collection("posts").save(
+    //     {
+    //       caption: req.body.caption,
+    //       img: "images/uploads/" + req.file.filename,
+    //       postedBy: user.local.username,
+    //       time,
+    //       like: 0,
+    //       likedBy: [],
+    //       comment: [],
+    //
+    //     },
+    //     (err, result) => {
+    //       if (err) return console.log(err);
+    //       console.log("saved to database");
+    //       res.redirect("/therapist-profile");
+    //     }
+    //   );
+    // });
     app.post('/add', isLoggedIn, async (req, res) => {
       try {
         req.body.user = req.user.id
@@ -143,63 +215,13 @@ const geoUrl = "https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyBAQ
       })
     })
 
-//     exports.getStores = async (req, res, next) => {
-//   try {
-//     const stores = await Store.find();
-//
-//     return res.status(200).json({
-//       success: true,
-//       count: stores.length,
-//       data: stores
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: 'Server error' });
-//   }
-// };
-//
-// // @desc  Create a store
-// // @route POST /api/v1/stores
-// // @access Public
-// exports.addStore = async (req, res, next) => {
-//   try {
-//     const store = await Store.create(req.body);
-//
-//     return res.status(201).json({
-//       success: true,
-//       data: store
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     if (err.code === 11000) {
-//       return res.status(400).json({ error: 'This store already exists' });
-//     }
-//     res.status(500).json({ error: 'Server error' });
-//   }
-// };
-//     app.post('/addAddress', (req, res) => {
-//       let user = req.user;
-//       db.collection('therapists')
-//       .find(postedBy: user.local.username}) {
-//         $set: {
-//           thumbUp:req.body.thumbUp + 1
-//         }
-//       }, {
-//         sort: {_id: -1},
-//         upsert: true
-//       }, (err, result) => {
-//         if (err) return res.send(err)
-//         res.send(result)
-//       })
-//     })
-
 
 app.post("/maketherapistAdressaddress", (req, res) => {
   let time = new Date().toLocaleString();
 
   let user = req.user;
   console.log(user);
-  let userType = "expert"
+
 
   db.collection('users')
   .findOneAndUpdate({_id: req.user._id}, {
@@ -209,6 +231,7 @@ app.post("/maketherapistAdressaddress", (req, res) => {
   }, (err, result) => {
     if (err) return res.send(err)
   })
+   console.log(req.body);
 
   db.collection("addressTherapists").save(
     {
@@ -225,7 +248,7 @@ app.post("/maketherapistAdressaddress", (req, res) => {
     (err, result) => {
       if (err) return console.log(err);
       console.log("saved to database");
-      res.redirect("/feed-therapist");
+      res.redirect("/therapist-profile");
     }
   );
 });
