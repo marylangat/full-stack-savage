@@ -237,8 +237,8 @@ module.exports = function(app, passport, db, ObjectId, multer) {
     });
   });
 
-  app.post('/findTherapists', isLoggedIn, (req, res) => {
-    let user = req.user;
+
+  function findExpert() {
     db.collection('addressTherapists')
       .find()
 
@@ -273,8 +273,19 @@ module.exports = function(app, passport, db, ObjectId, multer) {
           .catch((err) => {
 
           })
+
       })
-  });
+  }
+
+
+  app.post('/findTherapists', isLoggedIn, (req, res) => {
+
+    let user = req.user;
+    findExpert(user, res)
+
+
+  })
+
 
   // // FEED =====================
   // app.get('/feed', isLoggedIn, function(req, res) {
@@ -476,6 +487,7 @@ module.exports = function(app, passport, db, ObjectId, multer) {
 
       .toArray((err, result) => {
         if (err) return console.log(err)
+
         res.render('client-profile.ejs', {
           user: req.user,
           posts: result
