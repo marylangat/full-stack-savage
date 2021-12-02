@@ -50,15 +50,13 @@ module.exports = function(app, passport, db, ObjectId, multer) {
   });
 
   app.post('/comment/:postComments', (req, res) => {
-    const currentUser = req.user.firstName + " " + req.user.surname;
 
     let postId = ObjectId(req.params.postComments);
-    console.log(req.user);
 
     db.collection('comments').save({
         comment: req.body.comment,
         postId: postId,
-        commentBy: currentUser
+        postedBy: req.user.firstName
       },
       (err, result) => {
         if (err) return console.log(err);
@@ -122,7 +120,7 @@ module.exports = function(app, passport, db, ObjectId, multer) {
         if (err) {
           return next(err);
         };
-        res.redirect("/");
+        res.redirect("/client-profile");
       });
     }
   });
@@ -270,9 +268,6 @@ module.exports = function(app, passport, db, ObjectId, multer) {
               therapists: therapistsInRange,
             })
           })
-          .catch((err) => {
-
-          })
       })
   });
 
@@ -287,87 +282,66 @@ module.exports = function(app, passport, db, ObjectId, multer) {
   //   })
   // });
 
-  // app.get('/feed', async (req, res) => {
-  //         const allComments = await db.collection("comments").countDocuments()
-  //         const allUsers = await db.collection("Users").countDocuments() - 1
+  app.get('/feed', async (req, res) => {
+    const allComments = await db.collection("comments").countDocuments()
+    const allUsers = await db.collection("Users").countDocuments() - 1
+    console.log('mary');
+
+    const numArray = [];
+
+
+    var bidArr = {};
+    var tasks = [
+      // Load users
+      function(callback) {
+        db.collection('users').find({}).toArray(function(err, users) {
+          if (err) return callback(err);
+          bidArr.users = users;
+          callback();
+        });
+      },
+      // Load posts
+      function(callback) {
+        db.collection('posts').find({}).toArray(function(err, posts) {
+          if (err) return callback(err);
+          bidArr.posts = posts;
+          callback();
+        });
+      },
+      // Load comments
+      function(callback) {
+        db.collection('comments').find({}).toArray(function(err, comments) {
+          if (err) return callback(err);
+          bidArr.comments = comments;
+          callback();
+        });
+      }
+    ];
+
+
+    async.parallel(tasks, function(err) {
+      res.render('feed', {
+        bidArr,
+        allComments,
+        numArray
+      });
+    });
+  });
+
+  // app.get('/feed', isLoggedIn, function(req, res) {
+  //   console.log("mary")
+  //     db.collection('posts').find({})
   //
   //
+  //       .toArray((err, result) => {
+  //       if (err) return console.log(err)
   //
-  //         const numArray = [];
-  //
-  //
-  //         var bidArr = {};
-  //         var tasks = [
-  //           // Load users
-  //           function(callback) {
-  //             db.collection('users').find({}).toArray(function(err, users) {
-  //               if (err) return callback(err);
-  //               bidArr.users = users;
-  //               callback();
-  //             });
-  //           },
-  //     // Load posts
-  //     function(callback) {
-  //       db.collection('posts').find({}).toArray(function(err, posts) {
-  //         if (err) return callback(err);
-  //         bidArr.posts = posts;
-  //         callback();
-  //       });
-  //     },
-  //     // Load comments
-  //     function(callback) {
-  //       db.collection('comments').find({}).toArray(function(err, comments) {
-  //         if (err) return callback(err);
-  //         bidArr.comments = comments;
-  //         callback();
-  //       });
-  //     }
-  //   ];
-  //
-  //
-  //   async.parallel(tasks, function(err) {
-  //     res.render('feed', {
-  //       bidArr,
-  //       allComments,
-  //       numArray
-  //     });
-  //   });
-  //   console.log(bidArr);
-  //   console.log(allComments);
+  //       res.render('feed.ejs', {
+  //         user:req.user,
+  //         posts: result
+  //       })
+  //     })
   // });
-
-  app.get('/feed', isLoggedIn, function(req, res) {
-    console.log("mary")
-    db.collection('posts').find({})
-
-
-      .toArray((err, posts) => {
-        if (err) return console.log(err)
-
-        db.collection('comments').find({})
-          .toArray((err, comments) => {
-            if (err) return console.log(err)
-
-            db.collection('users').find({})
-              .toArray((err, users) => {
-                if (err) return console.log(err)
-
-                console.log(comments, posts, users);
-
-
-                res.render('feed.ejs', {
-                  user: req.user,
-                  posts: posts,
-                  users: users,
-                  comments
-
-
-                })
-
-              })
-          })
-      })
-  })
 
   // @desc    Delete story
   // @route   DELETE /stories/:id
@@ -468,6 +442,7 @@ module.exports = function(app, passport, db, ObjectId, multer) {
   // })
   app.get('/client-profile', isLoggedIn, function(req, res) {
     let user = req.user;
+    console.log(req.user);
     db.collection('posts')
       .find({
         userId: user._id

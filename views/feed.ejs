@@ -79,109 +79,29 @@
 		</header><!-- #header end -->
 
 
-		<!-- Slider
-		============================================= -->
 
-		<section id="slider" class="slider-element min-vh-60 min-vh-md-100">
-			<div class="fslider h-100 position-absolute" data-speed="1800" data-pause="5000" data-animation="fade" data-arrows="true" data-pagi="false">
-				<div class="flexslider">
-					<div class="slider-wrap">
-            <% const expertPosts = bidArr.posts.reverse().filter(p => p.userType === "expert")%>
-                <% for(let i = 0 ; i <expertPosts.length; i++) {%>
 
-            <div class="slide text-center" style = "background: url(data:image/png;base64,<%=expertPosts[i].img.toString('base64')%>); background-repeat: no-repeat; background-position: center; background-size:contain;">
-              <div class="bg-overlay">
-                <div class="bg-overlay-content align-items-end">
-                  <div class="slide-caption px-4 pb-4 dark">
-                    <h3 class="mb-2 h1"><a href="#" class="text-white"><%=expertPosts[i].title %></a></h3>
-                    <p class="h5"><%=expertPosts[i].body %></p>
-                  </div>
-                </div>
-              </div>
-            </div>
+
+
 
 
 						<!-- Slide 2 -->
 
 						<!-- Slide 3 -->
 					</div>
-				</div>
-			</div>
-			<div class="postFooter">
-      <div class="likeBtn" postid="<%- expertPosts[i]._id %>">Like</div>
-                                <div>Comment</div>
-      </div>
-      <div class="postComments">
-          <% for (let i = 0; i < allComments; ++i) {%>
-              <% if (bidArr.comments[i].parentpostid === expertPosts[i]._id) { %>
-                  <div class="comments">
-                      <p class="commentAuthor"><%= bidArr.comments[i].postedBy %> </p>
-                      <p class="commentContent"><%= bidArr.comments[i].content %> </p>
-                  </div>
-                  <% } %>
-          <% } %>
-          <form action="/createcomment" method="POST">
-              <input type="text" name="content" placeholder="Write a comment...">
-              <input type="hidden" name="parentpostid" value="<%= expertPosts._id %>">
-          </form>
-      </div>
 
+						<%-include("./post", {posts: posts}) %>
 
-		</section><!-- #Slider end -->
-		<%} %>
-
-		<!-- Content
-		============================================= -->
+						
 
 
 
-    		<!-- Content
-    		============================================= -->
-    		<section id="content" class="bg-light">
-
-    			<div class="content-wrap pt-lg-0 pt-xl-0 pb-0">
-
-    				<div class="container clearfix">
-
-    					<div class="heading-block border-bottom-0 center pt-4 mb-3">
-    						<h3>Expert Posts</h3>
-    					</div>
-
-    					<!-- Posts
-    					============================================= -->
-    					<div class="row grid-container infinity-wrapper clearfix">
-    						<% const clientPosts = bidArr.posts.filter(p => p.userType === "client")%>
-                <% for(let i = 0; i < clientPosts.length; i++) {%>
 
 
-    						<!-- ARTICLE NO. 1 -->
-    						<div class="col-md-6 p-3">
-    							<div class="entry mb-1 clearfix">
-    								<div class="entry-image mb-3">
-    									<a href="" data-lightbox="image" style = "background-image: url(data:image/png;base64,<%=clientPosts[i].img.toString('base64')%>); background-repeat: no-repeat; background-position: center center; background-size: cover; height: 278px;"></a>
-    								</div>
-    								<div class="entry-title">
-    									<h3><a href="#"><%=clientPosts[i].title %></a></h3>
-    								</div>
-    								<div class="entry-content">
-    									<p><%=clientPosts[i].body %></p>
-    								</div>
-    								<div class="entry-meta no-separator nohover">
-    									<ul class="justify-content-between mx-0">
-    										<li><i class="icon-calendar2"></i><%=(clientPosts[i].createdAt).split(' ')[0] %> </li>
-    										<li>Relationships</li>
-    									</ul>
-    								</div>
-    								<div class="entry-meta no-separator hover">
-    									<ul class="mx-0">
-    										<li><a href="#">View More &rarr;</a></li>
-    									</ul>
-    								</div>
-    							</div>
-    						</div>
 
-							</section>
-							<%}%>
+
+
+	<!-- #Slider end -->
 
 
 

@@ -20,7 +20,7 @@
 
       <div class="container-fluid">
       <div class="page-header text-center">
-          <h1><%= user.local.email %>profile</h1>
+          <h1><%=user.firstName %></h1>
           <a href="/feed">Feed</a>
           <a href="/logout" class="btn btn-default btn-sm">Logout</a>
       </div>
@@ -80,6 +80,9 @@
       </div> -->
 
     </center>
+
+    <%- include('./findTherapists') %>
+
 
 
 
