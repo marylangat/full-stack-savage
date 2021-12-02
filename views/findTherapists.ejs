@@ -15,16 +15,23 @@
 
       <% for(let i = 0; i < therapists.length; i++) {%>
 
-      <%# anchor tag to therpist profile %>
+      
 
       
 
-      <div class=""><%= therapists[i].name %></div>
-      <div class=""><%= therapists[i].address %></div>
-      <div class=""><%= therapists[i].city %></div>
-      <div class=""><%= therapists[i].zip%></div>
+      <div class="card" style="width: 18rem;">
+  <div class="card-header">
+    <%= therapists[i].name %>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"><%= therapists[i].address2 %></li>
+    <li class="list-group-item"><%= therapists[i].city %></li>
+    <li class="list-group-item"><%= therapists[i].zip %></li>
+    <li class="list-group-item"><%= therapists[i].state %></li>
+    <li class="list-group-item"><%= therapists[i].phoneNumber %></li>
+  </ul>
+</div>
 
-      <div class=""><%= therapists[i].state%></div>
-        <!-- <div class=""><%= therapists[i].formattedAddress%></div> -->
+      
  <% } %>
     </div>

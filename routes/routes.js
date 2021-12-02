@@ -241,7 +241,9 @@ module.exports = function(app, passport, db, ObjectId, multer) {
   app.post('/findTherapists', isLoggedIn, (req, res) => {
     let user = req.user;
     db.collection('addressTherapists')
-      .find().toArray((err, result) => {
+      .find()
+
+      .toArray((err, result) => {
         if (err) return console.log(err)
         console.log("all therapists", result);
         const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyBAQlSMbOLlUdpU1idGcHdi0uqvUaLEUl8&address=${req.body.zip}`
@@ -264,7 +266,7 @@ module.exports = function(app, passport, db, ObjectId, multer) {
 
             therapistsInRange.sort((a, b) => a.distance - b.distance)
 
-            res.render('findTherapists.ejs', {
+            res.render('client-Profile', {
               user: req.user,
               therapists: therapistsInRange,
             })
