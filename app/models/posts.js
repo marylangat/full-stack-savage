@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const   PostSchema = new mongoose.Schema({
+const PostSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -27,6 +27,15 @@ const   PostSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  likes: [{
+    type: ObjectID,
+    required: false
+  }],
+  userId: {
+    type: ObjectID,
+    required: false
+  }
 })
+
 
 module.exports = mongoose.model('Posts', PostSchema)

@@ -1,0 +1,28 @@
+
+<%- include('layout/sideNav') %>
+<%- include('layout/footer') %>
+
+      <div id="content" class="p-4 p-md-5 pt-5">
+
+      <form class="" action="/findTherapists" method="post">
+        <input type="text" name="zip" value="">
+        <input type="text" name="radius" value="">
+        <button type="submit" name="button">search</button>
+
+        <% console.log(therapists)%>
+
+      </form>
+
+      <% for(let i = 0; i < therapists.length; i++) {%>
+
+      <%# anchor tag to therpist profile %>
+
+      <div class=""><%= therapists[i].name %></div>
+      <div class=""><%= therapists[i].address %></div>
+      <div class=""><%= therapists[i].city %></div>
+      <div class=""><%= therapists[i].zip%></div>
+
+      <div class=""><%= therapists[i].state%></div>
+        <!-- <div class=""><%= therapists[i].formattedAddress%></div> -->
+ <% } %>
+    </div>
