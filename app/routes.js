@@ -237,20 +237,19 @@ module.exports = function(app, passport, db, ObjectId, multer) {
     });
   });
 
-
-  function findExpert() {
+  function findExpert(user, body) {
     db.collection('addressTherapists')
       .find()
-
       .toArray((err, result) => {
         if (err) return console.log(err)
         console.log("all therapists", result);
-        const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyBAQlSMbOLlUdpU1idGcHdi0uqvUaLEUl8&address=${req.body.zip}`
+        
+        const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyBAQlSMbOLlUdpU1idGcHdi0uqvUaLEUl8&address=${body.zip}`
 
-        locObj = fetch(geoUrl)
+        return fetch(geoUrl)
           .then((res) => res.json()).then((data) => {
 
-            const radius = parseInt(req.body.radius)
+            const radius = parseInt(body.radius)
             const userLat = data.results[0].geometry.location.lat;
             const userLon = data.results[0].geometry.location.lng;
             console.log("location", radius, userLat, userLon, result)
@@ -258,20 +257,18 @@ module.exports = function(app, passport, db, ObjectId, multer) {
             const therapistsInRange = result.filter(t => {
               const dist = distance(userLat, userLon, t.location.lat, t.location.lng)
               t.distance = dist
-
-
               return dist < radius
             })
 
             therapistsInRange.sort((a, b) => a.distance - b.distance)
-
-            res.render('findTherapists.ejs', {
-              user: req.user,
-              therapists: therapistsInRange,
-            })
+            return therapistsInRange;
+            // res.render('findTherapists.ejs', {
+            //   user: req.user,
+            //   therapists: therapistsInRange,
+            // })
           })
           .catch((err) => {
-
+              console.log('error')
           })
 
       })
@@ -281,8 +278,9 @@ module.exports = function(app, passport, db, ObjectId, multer) {
   app.post('/findTherapists', isLoggedIn, (req, res) => {
 
     let user = req.user;
-    findExpert(user, res)
+    let resp = findExpert(user, req.body)
 
+  console.log(resp)
 
   })
 
@@ -487,7 +485,7 @@ module.exports = function(app, passport, db, ObjectId, multer) {
 
       .toArray((err, result) => {
         if (err) return console.log(err)
-
+        
         res.render('client-profile.ejs', {
           user: req.user,
           posts: result

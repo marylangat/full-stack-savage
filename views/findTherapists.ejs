@@ -1,12 +1,12 @@
+<%-include("layout/header") %>
 
-<%- include('layout/sideNav') %>
-<%- include('layout/footer') %>
+
 
       <div id="content" class="p-4 p-md-5 pt-5">
 
       <form class="" action="/findTherapists" method="post">
-        <input type="text" name="zip" value="">
-        <input type="text" name="radius" value="">
+        <input type="text" name="zip" value="" placeholder="Enter your Zip...">
+        <input type="text" name="radius" value="" placeholder="Enter distance...">
         <button type="submit" name="button">search</button>
 
         <% console.log(therapists)%>
@@ -16,6 +16,8 @@
       <% for(let i = 0; i < therapists.length; i++) {%>
 
       <%# anchor tag to therpist profile %>
+
+      
 
       <div class=""><%= therapists[i].name %></div>
       <div class=""><%= therapists[i].address %></div>

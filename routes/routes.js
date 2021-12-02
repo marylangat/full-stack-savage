@@ -62,6 +62,7 @@ module.exports = function(app, passport, db, ObjectId, multer) {
         if (err) return console.log(err);
         console.log('saved to database');
         res.redirect(`/post/${postId}`);
+        
       }
     );
   });
@@ -170,6 +171,8 @@ module.exports = function(app, passport, db, ObjectId, multer) {
   // });
   // router.get('/:id', ensureAuth, async (req, res) => {
   //   try {
+
+
   //     let post = await Story.findById(req.params.id).populate('user').lean()
   //
   //     if (!story) {
@@ -238,9 +241,7 @@ module.exports = function(app, passport, db, ObjectId, multer) {
   app.post('/findTherapists', isLoggedIn, (req, res) => {
     let user = req.user;
     db.collection('addressTherapists')
-      .find()
-
-      .toArray((err, result) => {
+      .find().toArray((err, result) => {
         if (err) return console.log(err)
         console.log("all therapists", result);
         const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyBAQlSMbOLlUdpU1idGcHdi0uqvUaLEUl8&address=${req.body.zip}`
@@ -442,20 +443,15 @@ module.exports = function(app, passport, db, ObjectId, multer) {
   // })
   app.get('/client-profile', isLoggedIn, function(req, res) {
     let user = req.user;
-    console.log(req.user);
     db.collection('posts')
-      .find({
-        userId: user._id
-      })
-
-
-      .toArray((err, result) => {
-        if (err) return console.log(err)
-        res.render('client-profile.ejs', {
-          user: req.user,
-          posts: result
-        });
-      });
+      .find({userId: user._id})
+      .toArray((err, posts) => {
+        if (err) return console.log(err);
+          res.render('client-profile.ejs', {
+                user,
+                posts,
+            });
+          })        
   });
 
 
